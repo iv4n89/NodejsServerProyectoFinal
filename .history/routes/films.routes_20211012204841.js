@@ -1,9 +1,8 @@
 const { Router } = require("express");
 const { check } = require('express-validator');
 
-const { allFilmsGet, newFilmPost, filmUpdate, oneFilmGet, filmDelete, filmImageUpload, filmImageUpdate, filmImageGet } = require('../controllers/films.controller');
+const { allFilmsGet, newFilmPost, filmUpdate, oneFilmGet, filmDelete, filmImageUpload } = require('../controllers/films.controller');
 const { filmIdExiste } = require('../helpers/db.validators');
-const { validarArchivo } = require("../middlewares/validarArchivo");
 const { validarCampos } = require("../middlewares/validarCampos");
 const { validarJWT } = require("../middlewares/validarJWT");
 const { hasRole } = require("../middlewares/validarRole");
@@ -18,8 +17,6 @@ router.get('/:id', [
     validarCampos
 ], oneFilmGet);
 
-router.get('/image/:id', [], filmImageGet);
-
 router.post('/', [
     validarJWT,
     check('titulo', 'The title is required').not().isEmpty(),
@@ -29,9 +26,7 @@ router.post('/', [
     validarCampos
 ], newFilmPost);
 
-router.post('/image', [
-    validarArchivo
-], filmImageUpload);
+router.post('/image', filmImageUpload);
 
 router.put('/:id', [
     validarJWT,
@@ -41,11 +36,6 @@ router.put('/:id', [
     hasRole('ADMIN_ROLE'),
     validarCampos
 ], filmUpdate);
-
-router.put('/image/:id', [
-    validarArchivo,
-    validarCampos
-], filmImageUpdate);
 
 router.delete('/:id', [
     validarJWT,

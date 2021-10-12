@@ -50,7 +50,7 @@ const filmDelete = (req, res) => {
         .then(result => result)
         .catch(err => { throw err });
     
-    Films.findOne({ where: { id: req.params.id} })
+    Films.findOne({ where: req.params })
         .then(film => {
             if (film.img) {
                 const pathImg = path.join(__dirname, '../uploads', 'Films', film.img);
@@ -58,13 +58,12 @@ const filmDelete = (req, res) => {
                     fs.unlinkSync(pathImg);
                 }
             }
-            //Borrar la entrada de la db despues de borrar la imagen del servidor, si existe
-            Films.destroy({ where: req.params })
-            .then(result => {
-                res.sendStatus(204);
-            }).catch(err => res.status(400).json({ msg: err.message }));
         });
 
+    Films.destroy({ where: req.params })
+        .then(result => {
+            res.sendStatus(204);
+        }).catch(err => res.status(400).json({ msg: err.message }));
 }
 
 const filmImageUpload = (req, res) => {

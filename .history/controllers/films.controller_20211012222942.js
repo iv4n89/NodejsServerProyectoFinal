@@ -49,22 +49,11 @@ const filmDelete = (req, res) => {
     Comments.destroy({ where: { FilmId: req.params.id } })
         .then(result => result)
         .catch(err => { throw err });
-    
-    Films.findOne({ where: { id: req.params.id} })
-        .then(film => {
-            if (film.img) {
-                const pathImg = path.join(__dirname, '../uploads', 'Films', film.img);
-                if (fs.existsSync(pathImg)) {
-                    fs.unlinkSync(pathImg);
-                }
-            }
-            //Borrar la entrada de la db despues de borrar la imagen del servidor, si existe
-            Films.destroy({ where: req.params })
-            .then(result => {
-                res.sendStatus(204);
-            }).catch(err => res.status(400).json({ msg: err.message }));
-        });
 
+    Films.destroy({ where: req.params })
+        .then(result => {
+            res.sendStatus(204);
+        }).catch(err => res.status(400).json({ msg: err.message }));
 }
 
 const filmImageUpload = (req, res) => {
@@ -77,6 +66,8 @@ const filmImageUpload = (req, res) => {
 
 const filmImageUpdate = (req, res) => {
     const { id } = req.params;
+
+    let modelo;
 
     Films.findOne({ where: { id } })
         .then(film => {
@@ -97,28 +88,9 @@ const filmImageUpdate = (req, res) => {
         }).catch(err => res.status(400).json({ msg: err.message }));
 }
 
-const filmImageGet = (req, res) => {
-
-    const { id } = req.params;
-
-    Films.findOne({ where: { id } })
-        .then(film => {
-            if (film && film.img) {
-                const pathImg = path.join(__dirname, '../uploads', 'Films', film.img);
-                if (fs.existsSync(pathImg)) {
-                    return res.sendFile(pathImg);
-                }
-            }
-            const noImg = path.join(__dirname, '../assets/no-image.jpg');
-            return res.sendFile(noImg);
-        }).catch(err => res.status(400).json({ msg: err.message }));
-
-}
-
 module.exports = {
     allFilmsGet,
     filmDelete,
-    filmImageGet,
     filmImageUpload,
     filmUpdate,
     filmImageUpdate,

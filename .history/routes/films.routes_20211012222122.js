@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { check } = require('express-validator');
 
-const { allFilmsGet, newFilmPost, filmUpdate, oneFilmGet, filmDelete, filmImageUpload, filmImageUpdate, filmImageGet } = require('../controllers/films.controller');
+const { allFilmsGet, newFilmPost, filmUpdate, oneFilmGet, filmDelete, filmImageUpload, filmImageUpdate } = require('../controllers/films.controller');
 const { filmIdExiste } = require('../helpers/db.validators');
 const { validarArchivo } = require("../middlewares/validarArchivo");
 const { validarCampos } = require("../middlewares/validarCampos");
@@ -17,8 +17,6 @@ router.get('/:id', [
     check('id').custom(filmIdExiste),
     validarCampos
 ], oneFilmGet);
-
-router.get('/image/:id', [], filmImageGet);
 
 router.post('/', [
     validarJWT,

@@ -52,13 +52,13 @@ const filmDelete = (req, res) => {
     
     Films.findOne({ where: { id: req.params.id} })
         .then(film => {
+            console.log(film);
             if (film.img) {
                 const pathImg = path.join(__dirname, '../uploads', 'Films', film.img);
                 if (fs.existsSync(pathImg)) {
                     fs.unlinkSync(pathImg);
                 }
             }
-            //Borrar la entrada de la db despues de borrar la imagen del servidor, si existe
             Films.destroy({ where: req.params })
             .then(result => {
                 res.sendStatus(204);
