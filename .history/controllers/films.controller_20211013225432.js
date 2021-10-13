@@ -71,7 +71,7 @@ const filmDelete = (req, res) => {
 module.exports = {
     allFilmsGet,
     filmDelete,
-    filmUpdate,
+    filmImageUpdate,
     newFilmPost,
     oneFilmGet,
 }
