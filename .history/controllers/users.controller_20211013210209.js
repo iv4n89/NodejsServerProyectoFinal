@@ -65,11 +65,11 @@ const userUpdate = (req, res) => {
 
 const userDelete = (req, res) => {
 
-    Comments.destroy({ where: { UserId: req.params.id } })
+    Comments.destroy({ where: { UserId: req.params } })
         .then(result => result)
         .catch(err => err);
     
-    Films.update({ UserId: 0 }, { where: { UserId: req.params.id } })
+    Films.update({ UserId: '0' }, { where: { UserId: req.params } })
         .then(result => result)
         .catch(err => err);
     

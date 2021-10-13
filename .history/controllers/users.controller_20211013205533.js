@@ -5,7 +5,6 @@ const { dbOpen } = require('../database/config.db');
 const generateJWT = require('../helpers/generate-jwt');
 const Users = dbOpen().models.Users;
 const Comments = dbOpen().models.Comments;
-const Films = dbOpen().models.Films;
 
 const allUsersGet = (req, res) => {
     const { limit = 5, offset = 0 } = req.query;
@@ -64,20 +63,29 @@ const userUpdate = (req, res) => {
 }
 
 const userDelete = (req, res) => {
+    // Users.findOne({ where: { name: '__default__' } })
+    //     .then(user => {
+    //         if (!user) {
+    //             Users.create({ name: '__default__', password: 000000, role: 'USER_ADMIN' })
+    //                 .then(result => result);
+    //         }
+    //     });
 
-    Comments.destroy({ where: { UserId: req.params.id } })
-        .then(result => result)
-        .catch(err => err);
-    
-    Films.update({ UserId: 0 }, { where: { UserId: req.params.id } })
-        .then(result => result)
-        .catch(err => err);
-    
-        Users.destroy({ where: req.params })
-            .then(result => {
-                res.status(200).json({ ok: true })
-            }).catch(err => res.status(400).json({ msg: err.message }));
-    }
+    Comments.findAll({ where: { UserId: req.params } })
+        .then(comms => {
+            if (comms) {
+                for (let c of comms) {
+                    Comments.update({ UserId: 0 }, { where: { id: c.id } })
+                        .then(result => result);
+                }
+            }
+        }).finally(final => {
+            Users.destroy({ where: req.params })
+                .then(result => {
+                    res.status(200).json({ ok: true })
+                }).catch(err => res.status(400).json({ msg: err.message }));
+        });
+}
 
 const checkPassword = (req, res) => {
     const { email, password } = req.body;

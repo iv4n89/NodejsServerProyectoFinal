@@ -5,7 +5,6 @@ const { dbOpen } = require('../database/config.db');
 const generateJWT = require('../helpers/generate-jwt');
 const Users = dbOpen().models.Users;
 const Comments = dbOpen().models.Comments;
-const Films = dbOpen().models.Films;
 
 const allUsersGet = (req, res) => {
     const { limit = 5, offset = 0 } = req.query;
@@ -65,11 +64,7 @@ const userUpdate = (req, res) => {
 
 const userDelete = (req, res) => {
 
-    Comments.destroy({ where: { UserId: req.params.id } })
-        .then(result => result)
-        .catch(err => err);
-    
-    Films.update({ UserId: 0 }, { where: { UserId: req.params.id } })
+    Comments.destroy({ where: { UserId: req.params } })
         .then(result => result)
         .catch(err => err);
     
