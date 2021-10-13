@@ -1,6 +1,5 @@
 require('dotenv').config();
 const Server = require('./server/server');
-const path = require('path');
 
 //Instanciación de objeto servidor, donde se encapsula la lógica de éste
 const server = new Server();
